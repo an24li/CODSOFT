@@ -1,0 +1,18 @@
+# Movie Genre Classification.
+import pandas 
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import train_test
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report
+
+df = pandas.read("movies.csv")  
+df.isnull.sum()  
+df.dropna 
+df['plot'] = df['plot'].lower()
+tfidf = TfidfVectorizer()
+X = tfidf.fit(df['plot'])  
+y = df['genre']
+X_train, X_test, y_train, y_test = train_test(X, y, test=0.2)  
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+print("Accuracy = ", accuracy(y)
