@@ -1,18 +1,33 @@
 # Movie Genre Classification.
-import pandas 
+import panda as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import train_test
+from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report
 
-df = pandas.read("movies.csv")  
-df.isnull.sum()  
-df.dropna 
-df['plot'] = df['plot'].lower()
-tfidf = TfidfVectorizer()
-X = tfidf.fit(df['plot'])  
-y = df['genre']
-X_train, X_test, y_train, y_test = train_test(X, y, test=0.2)  
+try:
+    df = pd.read_csv("Genre Classification Dataset.csv")  # Using the correct filename
+except FileNotFoundError:
+    print("Error: File not found. Please ensure the dataset is in the correct path.")
+    exit()
+
+# Data preprocessing
+print("Missing values per column:")
+print(df.isnull().sum())  # Fixed syntax for checking null values
+
+# Drop rows with missing values
+df = df.dropna()  # Actually apply the dropna operation by assigning back to df
+df['Text'] = df['Text'].str.lower()  # Using the correct column name from the dataset
+
+# Prepare features and labels
+X = df['Text']  # Text data
+y = df['Genre']  # Genre labels (target)
+tfidf = TfidfVectorizer(max_features=5000)  # Limiting features to prevent memory issues
+X_tfidf = tfidf.fit_transform(X)  # Correctly transform the text data
+X_train, X_test, y_train, y_test = train_test_split(X_tfidf, y, test_size=0.2, random_state=42)  # Fixed parameters
+model = LogisticRegression(max_iter=1000)  # Increased max_iter for convergence
 model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
-print("Accuracy = ", accuracy(y)
+print("\nAccuracy:", accuracy_score(y_test, y_pred))  # Fixed function name and parameters
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
